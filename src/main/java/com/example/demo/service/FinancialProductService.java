@@ -5,30 +5,42 @@ import com.example.demo.model.FinancialProduct;
 import com.example.demo.repository.FinancialProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
 public class FinancialProductService {
 
-    private String apiUrl = "http://apis.data.go.kr/B190017/service/GetInsuredProductService202008/getProductList202008";
+    @Value("${api.url}")
+    private String apiUrl;
 
-    private String apiKey = "UoPPz0gcgUkxIQpfIB1qcfifH27WFRiEYG3Ov+M4dQ1CDzJ4660agnXtojbsBvFlsS2+RS1uo2c0lIz+Iao/Mw==";
+    @Value("${api.key}")
+    private String apiKey;
 
     @Autowired
     private FinancialProductRepository financialProductRepository;
 
     public void fetchAndSaveFinancialProducts() {
-        String urlTemplate = UriComponentsBuilder.fromHttpUrl(apiUrl)
-                .queryParam("serviceKey", apiKey)
+        // 인코딩된 API 키
+        String encodedApiKey = URLEncoder.encode(apiKey, StandardCharsets.UTF_8);
+        // "청년"을 인코딩
+//        String encodedProductName = URLEncoder.encode("청년", StandardCharsets.UTF_8);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl)
+                .queryParam("serviceKey", encodedApiKey) // 인코딩된 키 사용
                 .queryParam("pageNo", "1")
                 .queryParam("numOfRows", "1")
                 .queryParam("resultType", "json")
-                .queryParam("prdNm", "청년")
-                .toUriString();
+                .queryParam("prdNm", "MG");
+
+        // .build(true)를 호출하여 이미 인코딩된 상태임을 명시
+        String urlTemplate = builder.build(true).toUriString();
 
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
