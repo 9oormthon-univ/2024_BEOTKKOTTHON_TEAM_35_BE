@@ -35,9 +35,9 @@ public class FinancialProductService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("serviceKey", encodedApiKey) // 인코딩된 키 사용
                 .queryParam("pageNo", "1")
-                .queryParam("numOfRows", "1")
+                .queryParam("numOfRows", "2")
                 .queryParam("resultType", "json")
-                .queryParam("prdNm", "MG");
+                .queryParam("prdNm", "KB");
 
         // .build(true)를 호출하여 이미 인코딩된 상태임을 명시
         String urlTemplate = builder.build(true).toUriString();
@@ -66,5 +66,8 @@ public class FinancialProductService {
             System.out.println("Error fetching financial products: " + e.getMessage());
             // 필요에 따라 사용자 정의 예외를 던지거나 다른 방식으로 처리
         }
+    }
+    public List<FinancialProduct> searchFinancialProducts(String keyword) {
+        return financialProductRepository.findByFncIstNmOrPrdNmContaining(keyword);
     }
 }
