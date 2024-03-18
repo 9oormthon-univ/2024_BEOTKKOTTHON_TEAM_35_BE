@@ -36,14 +36,14 @@ public class FinancialProductService {
 
     public void fetchAndSaveFinancialProducts() {
         String encodedApiKey = URLEncoder.encode(apiKey, StandardCharsets.UTF_8);
-        String encodedPrdNm = URLEncoder.encode("교보", StandardCharsets.UTF_8);
+        String encodedPrdNm = URLEncoder.encode("korea", StandardCharsets.UTF_8);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("serviceKey", encodedApiKey)
                 .queryParam("pageNo", "1")
-                .queryParam("numOfRows", "10")
-                .queryParam("resultType", "json")
-                .queryParam("prdNm", encodedPrdNm);
+                .queryParam("numOfRows", "10000000")
+                .queryParam("resultType", "json");
+//                .queryParam("prdNm",encodedPrdNm);
 
         String urlTemplate = builder.build(true).toUriString();
 
