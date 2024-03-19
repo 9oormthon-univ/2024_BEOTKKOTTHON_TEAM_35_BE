@@ -1,15 +1,13 @@
 package com.example.demo.users.entity;
 
-import com.example.demo.model.Quiz;
+import com.example.demo.model.Quiz; // Quiz 모델 import
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "users")
 @Getter
-@Setter
 @AllArgsConstructor
 @Builder
 @Entity
@@ -50,17 +48,18 @@ public class User {
     @Column(name = "device_token", nullable = false)
     private String deviceToken;
 
-    // User와 Quiz 사이의 OneToMany 관계를 정의
+    // User와 Quiz 사이의 OneToMany 관계를 정의하는 새로운 필드
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Quiz> quizzes = new ArrayList<>();
+    private List<Quiz> quizzes;
 
-    public void addQuiz(Quiz quiz) {
-        quizzes.add(quiz);
-        quiz.setUser(this);
-    }
-
-    public void removeQuiz(Quiz quiz) {
-        quizzes.remove(quiz);
-        quiz.setUser(null);
+    // 기존 메서드들
+    public void updateEmail(String email) {this.email = email;}
+    public void updateNickname(String nickname) {this.nickname = nickname;}
+    public void updatePassword1(String password1) {this.password1 = password1;}
+    public void updatePassword2(String password2) {this.password2 = password2;}
+    public void updatePoint(Long point) {this.point = point;}
+    public void updateflagNotification(Boolean flagNotification) {this.flagNotification = flagNotification;}
+    public void updateDeviceToken(String deviceToken){
+        this.deviceToken= deviceToken;
     }
 }
