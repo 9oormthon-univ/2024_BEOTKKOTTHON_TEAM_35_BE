@@ -22,14 +22,4 @@ public class TodayQuizController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    @PutMapping("/today-quizzes/{id}/answer")
-    public ResponseEntity<TodayQuiz> submitTodayQuizAnswer(@PathVariable Long id, @RequestParam int answer) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = Long.parseLong(authentication.getName()); // 이 예제에서는 사용자 이름이 사용자 ID로 사용됩니다.
-
-        return todayQuizService.updateAnswerAndUserScore(id, answer, userId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
 }

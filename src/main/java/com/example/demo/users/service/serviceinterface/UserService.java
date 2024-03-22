@@ -14,7 +14,4 @@ public interface UserService {
     void updateUser(Long userId, RequestUser request);
     void deleteUser(Long userId);
     boolean isNicknameExists(String nickname);
-    void addBookmark(String userEmail, String policyId);
-    List<String> getBookmarks(String userEmail);
-    List<Object> getBookmarkedPoliciesDetails(String userEmail);
 }

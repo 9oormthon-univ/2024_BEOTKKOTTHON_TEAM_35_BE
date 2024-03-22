@@ -2,10 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Quiz;
 import com.example.demo.service.QuizService;
+import com.example.demo.users.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,25 +41,30 @@ public class QuizController {
         return ResponseEntity.ok(quizzes);
     }
 
-    // 사용자의 답변을 제출받아 처리하는 엔드포인트 (0을 보내면 오답, 1을 보내면 정답 처리)
-    @PutMapping("/quizzes/{id}/answer")
-    public ResponseEntity<Quiz> submitAnswer(@PathVariable Long id, @RequestParam int answer) {
+    // 퀴즈 풀기
+    @PostMapping("/{quizId}/solve")
+    public ResponseEntity<String> solveQuiz(@PathVariable Long quizId, @RequestBody String answer) {
+        String username = getCurrentUsername();
+        boolean isCorrect = quizService.checkQuizAnswer(quizId, answer, username);
+        return ResponseEntity.ok(isCorrect ? "정답입니다!" : "틀렸습니다. 다시 시도해 보세요.");
+    }
+
+    // 틀린 퀴즈 다시 보기
+    @GetMapping("/review")
+    public ResponseEntity<List<Quiz>> reviewIncorrectQuizzes() {
+        String username = getCurrentUsername();
+        List<Quiz> incorrectQuizzes = quizService.getIncorrectQuizzesByUsername(username);
+        return ResponseEntity.ok(incorrectQuizzes);
+    }
+
+    // Username 가져오는 메소드
+    private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // SecurityContext에서 사용자 이름(여기서는 사용자 ID로 가정) 추출
-
-        // 퀴즈 답변 업데이트 시 사용자 정보도 함께 업데이트
-        return quizService.updateAnswerStatus(id, answer, Long.parseLong(username)) // username을 Long 타입으로 변환하여 메서드 호출
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    // AnswerStatus에 따라 문제 필터링
-    @GetMapping("/quizzes/filter")
-    public ResponseEntity<List<Quiz>> getQuizzesByAnswerStatus(@RequestParam(required = false) String answerStatus) {
-        List<Quiz> filteredQuizzes = quizService.getQuizzesByAnswerStatus(answerStatus);
-        if (filteredQuizzes.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userDetails.getUsername();
         }
-        return ResponseEntity.ok(filteredQuizzes);
+        return null; // 또는 적절한 예외 처리
     }
+
 }

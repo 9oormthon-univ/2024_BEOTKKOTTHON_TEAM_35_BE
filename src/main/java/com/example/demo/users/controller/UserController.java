@@ -70,20 +70,5 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    // 정책 북마크 추가
-    @Operation(summary = "정책 북마크 추가(출력 결과 <bizId> = policyId)")
-    @PostMapping("/bookmark/{policyId}")
-    public ResponseEntity<Void> addBookmark(Authentication authentication, @PathVariable String policyId) {
-        String username = authentication.getName(); // 사용자 식별 정보 예시로 사용
-        userService.addBookmark(username, policyId);
-        return ResponseEntity.ok().build();
-    }
 
-    @Operation(summary = "북마크한 정책 상세 조회")
-    @GetMapping("/bookmarks/details")
-    public ResponseEntity<List<Object>> getBookmarkedPoliciesDetails(Authentication authentication) {
-        String username = authentication.getName(); // 사용자 식별 정보 예시로 사용
-        List<Object> details = userService.getBookmarkedPoliciesDetails(username);
-        return ResponseEntity.ok(details);
-    }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.users.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,6 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder // Lombok Builder 추가
 public class FinancialProduct {
 
     @Id
@@ -17,12 +19,11 @@ public class FinancialProduct {
     private String prdNm; // 금융상품명
     private String prdSalDscnDt; // 상품판매중단일자
     private String regDate; // 등록일
+    private int viewCount; // 조회수
+    private int bookmarkCount; // 북마크 수
+    private String homepageLink; // 홈페이지 링크
 
-    // 추가할 생성자
-    public FinancialProduct(String fncIstNm, String prdNm, String prdSalDscnDt, String regDate) {
-        this.fncIstNm = fncIstNm;
-        this.prdNm = prdNm;
-        this.prdSalDscnDt = prdSalDscnDt;
-        this.regDate = regDate;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

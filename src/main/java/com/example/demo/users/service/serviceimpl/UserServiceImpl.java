@@ -120,28 +120,4 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByNickname(nickname).isPresent();
     }
 
-    // 퀴즈 북마크 추가 기능
-    @Override
-    public void addBookmark(String userEmail, String policyId) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UserNotExist("User not found", ErrorCode.USER_NOT_EXIST));
-        user.getBookmarkedPolicyIds().add(policyId);
-        userRepository.save(user);
-    }
-
-    @Override
-    public List<String> getBookmarks(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UserNotExist("User not found", ErrorCode.USER_NOT_EXIST));
-        return user.getBookmarkedPolicyIds();
-    }
-
-    @Override
-    public List<Object> getBookmarkedPoliciesDetails(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UserNotExist("User not found", ErrorCode.USER_NOT_EXIST));
-        return user.getBookmarkedPolicyIds().stream()
-                .map(youthCenterService::fetchPolicyDetails)
-                .collect(Collectors.toList());
-    }
 }
