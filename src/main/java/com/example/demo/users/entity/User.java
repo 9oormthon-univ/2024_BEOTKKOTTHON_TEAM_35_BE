@@ -1,6 +1,8 @@
 package com.example.demo.users.entity;
 
 import com.example.demo.model.Quiz; // Quiz 모델 import
+import com.example.demo.model.TodayQuiz;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
     @Id
@@ -51,6 +54,10 @@ public class User {
     // User와 Quiz 사이의 OneToMany 관계를 정의하는 새로운 필드
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Quiz> quizzes;
+
+    // User와 TodayQuiz 사이의 OneToMany 관계를 정의하는 새로운 필드
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TodayQuiz> todayQuizzes;
 
     // 기존 메서드들
     public void updateEmail(String email) {this.email = email;}
