@@ -1,6 +1,5 @@
 package com.example.demo.scholarship.repository;
 
-import com.example.demo.model.FinancialProduct;
 import com.example.demo.scholarship.entity.Scholarship;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +12,7 @@ import java.util.List;
 public interface ScholarshipRepository extends JpaRepository<Scholarship, Long> {
     @Query("SELECT s FROM Scholarship s WHERE s.productName LIKE %:keyword% OR s.organizerName LIKE %:keyword%")
     List<Scholarship> findByKeyword(@Param("keyword") String keyword);
+    @Query("SELECT s FROM Scholarship s WHERE s.region = :region")
+    List<Scholarship> findByRegion(@Param("region") String region);
+
 }
