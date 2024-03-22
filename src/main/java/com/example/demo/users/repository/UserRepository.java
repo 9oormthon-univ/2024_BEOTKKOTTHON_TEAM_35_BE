@@ -12,6 +12,4 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickname(String nickname);
     Optional<User> findByEmail(String email);
-    @Query("SELECT u FROM User u WHERE u.oauthId = :oauthId")
-    User findByOauthId(@Param("oauthId") String oauthId);
 }
