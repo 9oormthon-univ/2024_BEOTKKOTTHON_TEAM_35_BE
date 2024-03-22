@@ -33,15 +33,11 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncoder.encode(request.getPassword1());
 
         User user = User.builder()
-                .oauthId(request.getOauthId())
-                .oauthProvider(request.getOauthProvider())
                 .email(request.getEmail())
                 .password1(encodedPassword)
                 .password2(encodedPassword)
                 .point(request.getPoint())
-                .gender(request.getGender())
                 .nickname(request.getNickname())
-                .deviceToken(request.getDeviceToken())
                 .flagNotification(request.getFlagNotification())
                 .build();
 
@@ -54,15 +50,11 @@ public class UserServiceImpl implements UserService {
 
         return UserDto.builder()
                 .userId(userId)
-                .oauthId(user.getOauthId())
-                .oauthProvider(user.getOauthProvider())
                 .email(user.getEmail())
                 .password1(user.getPassword1())
                 .password2(user.getPassword2())
                 .point(user.getPoint())
-                .gender(user.getGender())
                 .nickname(user.getNickname())
-                .deviceToken(user.getDeviceToken())
                 .flagNotification(user.getFlagNotification())
                 .build();
     }
@@ -80,7 +72,6 @@ public class UserServiceImpl implements UserService {
         user.updatePassword2(encodedPassword);
         user.updatePoint(request.getPoint());
         user.updateflagNotification(request.getFlagNotification());
-        user.updateDeviceToken(request.getDeviceToken());
 
         userRepository.save(user);
     }

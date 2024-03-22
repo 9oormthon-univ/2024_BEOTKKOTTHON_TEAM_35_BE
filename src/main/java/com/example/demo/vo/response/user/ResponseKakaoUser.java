@@ -9,6 +9,5 @@ public class ResponseKakaoUser {
     private String nickname;
     private String profile;
     private String jwtToken;
-    private String oauthProvider = "Kakao";
 }
 
