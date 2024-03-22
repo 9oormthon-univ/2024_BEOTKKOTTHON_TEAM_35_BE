@@ -4,6 +4,7 @@ import com.example.demo.users.dto.UserDto;
 import com.example.demo.vo.request.user.RequestLogin;
 import com.example.demo.vo.request.user.RequestUser;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -13,4 +14,7 @@ public interface UserService {
     void updateUser(Long userId, RequestUser request);
     void deleteUser(Long userId);
     boolean isNicknameExists(String nickname);
+    void addBookmark(String userEmail, String policyId);
+    List<String> getBookmarks(String userEmail);
+    List<Object> getBookmarkedPoliciesDetails(String userEmail);
 }

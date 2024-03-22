@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "users")
@@ -59,6 +60,13 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TodayQuiz> todayQuizzes;
 
+    // 정책 ID 북마크 필드
+    @ElementCollection
+    @CollectionTable(name = "user_bookmarks", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "policy_id")
+    private List<String> bookmarkedPolicyIds = new ArrayList<>();
+
+
     // 기존 메서드들
     public void updateEmail(String email) {this.email = email;}
     public void updateNickname(String nickname) {this.nickname = nickname;}
@@ -69,4 +77,24 @@ public class User {
     public void updateDeviceToken(String deviceToken){
         this.deviceToken= deviceToken;
     }
+
+    // 북마크 관련 메서드 추가
+    public void addBookmark(String policyId) {
+        if (this.bookmarkedPolicyIds == null) {
+            this.bookmarkedPolicyIds = new ArrayList<>();
+        }
+        this.bookmarkedPolicyIds.add(policyId);
+    }
+
+    public void removeBookmark(String policyId) {
+        if (this.bookmarkedPolicyIds != null) {
+            this.bookmarkedPolicyIds.remove(policyId);
+        }
+    }
+
+    // 북마크 목록 반환 메서드
+    public List<String> getBookmarkedPolicyIds() {
+        return this.bookmarkedPolicyIds;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.demo.users.service.serviceimpl;
 
 import com.example.demo.component.JwtTokenProvider;
 import com.example.demo.error.ErrorCode;
+import com.example.demo.service.YouthCenterService;
 import com.example.demo.users.dto.UserDto;
 import com.example.demo.users.entity.User;
 import com.example.demo.users.exception.UserNotExist;
@@ -18,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,6 +30,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final YouthCenterService youthCenterService;
+
 
     @Transactional
     public void createUser(RequestUser request) {
@@ -113,5 +118,30 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public boolean isNicknameExists(String nickname) {
         return userRepository.findByNickname(nickname).isPresent();
+    }
+
+    // 퀴즈 북마크 추가 기능
+    @Override
+    public void addBookmark(String userEmail, String policyId) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotExist("User not found", ErrorCode.USER_NOT_EXIST));
+        user.getBookmarkedPolicyIds().add(policyId);
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<String> getBookmarks(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotExist("User not found", ErrorCode.USER_NOT_EXIST));
+        return user.getBookmarkedPolicyIds();
+    }
+
+    @Override
+    public List<Object> getBookmarkedPoliciesDetails(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotExist("User not found", ErrorCode.USER_NOT_EXIST));
+        return user.getBookmarkedPolicyIds().stream()
+                .map(youthCenterService::fetchPolicyDetails)
+                .collect(Collectors.toList());
     }
 }
