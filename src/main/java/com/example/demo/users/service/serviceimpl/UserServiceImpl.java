@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public void createUser(RequestUser request) {
+    public Long createUser(RequestUser request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
@@ -41,7 +41,8 @@ public class UserServiceImpl implements UserService {
                 .oauthProvider(request.getOauthProvider())
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return savedUser.getUserId();
     }
     @Transactional(readOnly = true)
     public UserDto getUser(Long userId){
