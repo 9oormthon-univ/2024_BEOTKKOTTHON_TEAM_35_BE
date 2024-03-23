@@ -6,9 +6,9 @@ import lombok.Data;
 public class RequestUser {
     private Long userId;
     private String email;
-    private String password1;
-    private String password2;
+    private String password;
     private Long point;
     private String nickname;
     private Boolean flagNotification;
+    private String oauthProvider;
 }

@@ -30,15 +30,15 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void createUser(RequestUser request) {
-        String encodedPassword = passwordEncoder.encode(request.getPassword1());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
                 .email(request.getEmail())
-                .password1(encodedPassword)
-                .password2(encodedPassword)
+                .password(encodedPassword)
                 .point(request.getPoint())
                 .nickname(request.getNickname())
                 .flagNotification(request.getFlagNotification())
+                .oauthProvider(request.getOauthProvider())
                 .build();
 
         userRepository.save(user);
@@ -51,8 +51,7 @@ public class UserServiceImpl implements UserService {
         return UserDto.builder()
                 .userId(userId)
                 .email(user.getEmail())
-                .password1(user.getPassword1())
-                .password2(user.getPassword2())
+                .password(user.getPassword())
                 .point(user.getPoint())
                 .nickname(user.getNickname())
                 .flagNotification(user.getFlagNotification())
@@ -64,12 +63,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotExist("user not exist", ErrorCode.USER_NOT_EXIST));
 
-        String encodedPassword = passwordEncoder.encode(request.getPassword1());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
         // 계정 정보 업데이트
         user.updateEmail(request.getEmail());
         user.updateNickname(request.getNickname());
-        user.updatePassword1(encodedPassword);
-        user.updatePassword2(encodedPassword);
+        user.updatePassword(encodedPassword);
         user.updatePoint(request.getPoint());
         user.updateflagNotification(request.getFlagNotification());
 
@@ -81,7 +79,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(requestLogin.getEmail())
                 .orElseThrow(()-> new UserNotExist("user not exist", ErrorCode.USER_NOT_EXIST));
 
-        if (!passwordEncoder.matches(requestLogin.getPassword(), user.getPassword1())) {
+        if (!passwordEncoder.matches(requestLogin.getPassword(), user.getPassword())) {
             throw new UserPasswordIncorrect("user password incorrect", ErrorCode.USER_PASSWORD_INCORRECT);
         }
 
