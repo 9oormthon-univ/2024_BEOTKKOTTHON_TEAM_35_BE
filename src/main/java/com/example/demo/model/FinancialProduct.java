@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import com.example.demo.users.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +22,5 @@ public class FinancialProduct {
     private int bookmarkCount; // 북마크 수
     private String homepageLink; // 홈페이지 링크
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String description; // 한줄 설명
 }
