@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,9 +22,9 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//                .cors(cors -> cors // CORS 설정 활성화
-//                        .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
-//                )
+                .cors(cors -> cors // CORS 설정 활성화
+                        .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+                )
                 .csrf((csrfConfig) ->
                         csrfConfig.disable()
                 ) // 1번

@@ -84,6 +84,12 @@ public class FinancialProductService {
         }
     }
 
+    public List<FinancialProduct> getAllFinancialProducts() {
+        // 모든 금융 상품을 가져오는 로직 구현
+        // Spring Data JPA를 사용한다면 이는 간단한 repository.findAll() 호출이 될 수 있습니다.
+        return financialProductRepository.findAll();
+    }
+
     public List<FinancialProduct> searchFinancialProducts(String keyword) {
         String redisKey = "search:" + keyword;
 
