@@ -22,7 +22,6 @@ public class FinancialProduct {
     private int viewCount; // 조회수
     private int bookmarkCount; // 북마크 수
     private String homepageLink; // 홈페이지 링크
-    private boolean bookmarked = false; // 북마크 여부, 기본값 false
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
