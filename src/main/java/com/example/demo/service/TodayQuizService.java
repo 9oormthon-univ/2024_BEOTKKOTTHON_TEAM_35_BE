@@ -22,23 +22,23 @@ public class TodayQuizService {
         return todayQuizRepository.findById(id);
     }
 
-    public Optional<TodayQuiz> updateAnswerAndUserScore(Long quizId, int userResponse, Long userId) {
-        Optional<TodayQuiz> quizOptional = todayQuizRepository.findById(quizId);
-        Optional<User> userOptional = userRepository.findById(userId);
-
-        quizOptional.ifPresent(quiz -> {
-            if (userResponse == 1) {
-                quiz.setAnswerStatus("CORRECT");
-            } else if (userResponse == 0) {
-                quiz.setAnswerStatus("WRONG");
-            }
-            userOptional.ifPresent(user -> {
-                quiz.setUser(user);
-                user.getTodayQuizzes().add(quiz);
+    // 정답 확인 및 포인트 업데이트 메서드
+    public boolean checkTodayQuizAnswer(Long quizId, String answer, String username) {
+        Optional<TodayQuiz> quizOpt = todayQuizRepository.findById(quizId);
+        if (!quizOpt.isPresent()) {
+            return false; // 퀴즈가 존재하지 않음
+        }
+        TodayQuiz quiz = quizOpt.get();
+        boolean isCorrect = quiz.getCorrectAnswer().equals(answer);
+        if (isCorrect) {
+            Optional<User> userOpt = userRepository.findByNickname(username);
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                user.updatePoint(user.getPoint() + 1); // 포인트 1 증가
                 userRepository.save(user);
-            });
-            todayQuizRepository.save(quiz);
-        });
-        return quizOptional;
+            }
+        }
+        return isCorrect;
     }
+
 }

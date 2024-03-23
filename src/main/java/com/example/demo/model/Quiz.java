@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import com.example.demo.users.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,11 +16,8 @@ public class Quiz {
     private String correctAnswer;
     private String wrongAnswer1;
     private String wrongAnswer2;
-    private String category; // 예: 금융 개념, 금융 상품 등
-    private String answerStatus; // 예: NULL (미응답), CORRECT (정답), WRONG (오답)
+    private String category;
 
-    // Quiz와 User 사이의 ManyToOne 관계를 정의
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    // 난이도(stage) 컬럼 추가
+    private String stage; // 이 필드의 데이터 타입은 예시로 String을 사용했지만, 필요에 따라 다른 타입으로 변경할 수 있습니다.
 }

@@ -1,10 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Quiz;
+import com.example.demo.model.QuizAttempt;
+import com.example.demo.repository.QuizAttemptRepository;
 import com.example.demo.repository.QuizRepository;
-import com.example.demo.users.entity.User;
 import com.example.demo.users.repository.UserRepository;
+import com.example.demo.users.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,12 +16,19 @@ import java.util.stream.Collectors;
 @Service
 public class QuizService {
 
-    private final QuizRepository quizRepository;
-    private final UserRepository userRepository; // UserRepository 주입
+    @Autowired
+    private QuizRepository quizRepository;
 
-    public QuizService(QuizRepository quizRepository, UserRepository userRepository) {
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private QuizAttemptRepository quizAttemptRepository;
+
+    public QuizService(QuizRepository quizRepository, UserRepository userRepository, QuizAttemptRepository quizAttemptRepository) {
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
+        this.quizAttemptRepository = quizAttemptRepository;
     }
 
     public Optional<Quiz> getQuizById(Long id) {
@@ -28,30 +39,27 @@ public class QuizService {
         return quizRepository.findByCategory(category);
     }
 
-    // 사용자의 답변을 기반으로 답변 상태와 사용자 정보를 업데이트하는 메소드
-    public Optional<Quiz> updateAnswerStatus(Long quizId, int userResponse, Long userId) {
-        Optional<Quiz> quizOptional = quizRepository.findById(quizId);
-        Optional<User> userOptional = userRepository.findById(userId);
+    public boolean checkQuizAnswer(Long quizId, String answer, String username) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid quiz ID: " + quizId));
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid username: " + username));
 
-        quizOptional.ifPresent(quiz -> {
-            if (userResponse == 1) {
-                quiz.setAnswerStatus("CORRECT");
-            } else if (userResponse == 0) {
-                quiz.setAnswerStatus("WRONG");
-            }
-            userOptional.ifPresent(quiz::setUser); // 사용자 정보를 퀴즈와 연결
-            quizRepository.save(quiz);
-        });
+        boolean isCorrect = quiz.getCorrectAnswer().equals(answer);
+        QuizAttempt attempt = new QuizAttempt(null, user, quiz, answer, isCorrect);
+        quizAttemptRepository.save(attempt);
 
-        return quizOptional;
+        return isCorrect;
     }
 
-    // AnswerStatus에 따라 문제 필터링
-    public List<Quiz> getQuizzesByAnswerStatus(String answerStatus) {
-        List<Quiz> quizzes = quizRepository.findAll();
-        return quizzes.stream()
-                .filter(quiz -> answerStatus == null ? quiz.getAnswerStatus() == null : answerStatus.equals(quiz.getAnswerStatus()))
+    public List<Quiz> getIncorrectQuizzesByUsername(String username) {
+        User user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid username: " + username));
+        List<QuizAttempt> incorrectAttempts = quizAttemptRepository.findByUserAndCorrect(user, false);
+
+        return incorrectAttempts.stream()
+                .map(QuizAttempt::getQuiz)
+                .distinct()
                 .collect(Collectors.toList());
     }
-
 }

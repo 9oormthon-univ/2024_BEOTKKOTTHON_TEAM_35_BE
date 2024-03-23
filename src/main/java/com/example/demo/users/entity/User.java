@@ -1,11 +1,13 @@
 package com.example.demo.users.entity;
 
+import com.example.demo.model.ProductBookmark;
 import com.example.demo.model.Quiz; // Quiz 모델 import
 import com.example.demo.model.TodayQuiz;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "users")
@@ -39,13 +41,9 @@ public class User {
     @Column(name = "flag_notification", nullable = false)
     private Boolean flagNotification;
 
-    // User와 Quiz 사이의 OneToMany 관계를 정의하는 새로운 필드
+    // User와 ProductBookmark 사이의 OneToMany 관계를 정의
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Quiz> quizzes;
-
-    // User와 TodayQuiz 사이의 OneToMany 관계를 정의하는 새로운 필드
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TodayQuiz> todayQuizzes;
+    private List<ProductBookmark> productBookmarks = new ArrayList<>();
 
     // 기존 메서드들
     public void updateEmail(String email) {this.email = email;}
