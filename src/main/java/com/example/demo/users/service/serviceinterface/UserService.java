@@ -13,4 +13,5 @@ public interface UserService {
     void updateUser(Long userId, RequestUser request);
     void deleteUser(Long userId);
     boolean isNicknameExists(String nickname);
+    boolean isEmailExists(String email);
 }
