@@ -104,4 +104,9 @@ public class UserServiceImpl implements UserService {
     public boolean isNicknameExists(String nickname) {
         return userRepository.findByNickname(nickname).isPresent();
     }
+
+    @Transactional(readOnly = true)
+    public boolean isEmailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
 }

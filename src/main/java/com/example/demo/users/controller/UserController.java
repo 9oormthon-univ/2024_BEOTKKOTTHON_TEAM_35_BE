@@ -62,6 +62,17 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "이메일 체크")
+    @GetMapping("/check-email/{email}")
+    public ResponseEntity<String> checkEmailAvailability(@PathVariable String email) {
+        boolean exists = userService.isEmailExists(email);
+        if (exists) {
+            return ResponseEntity.ok("중복된 이메일입니다.");
+        } else {
+            return ResponseEntity.ok("사용 가능한 이메일입니다.");
+        }
+    }
+
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {

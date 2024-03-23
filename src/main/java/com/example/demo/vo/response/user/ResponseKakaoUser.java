@@ -8,6 +8,7 @@ import lombok.Data;
 public class ResponseKakaoUser {
     private String nickname;
     private String profile;
+    private String email;
     private String jwtToken;
 }
 

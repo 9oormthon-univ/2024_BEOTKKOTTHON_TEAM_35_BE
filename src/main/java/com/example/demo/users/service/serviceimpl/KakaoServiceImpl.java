@@ -136,9 +136,11 @@ public class KakaoServiceImpl implements KakaoService {
         JsonNode profileNode = kakaoAccountNode.get("profile");
 
         String profileNickname = profileNode.get("nickname").asText();
+        String profileEmail = kakaoAccountNode.get("email").asText();
 
         ResponseKakaoUser responseKakaoUser = new ResponseKakaoUser();
         responseKakaoUser.setNickname(profileNickname);
+        responseKakaoUser.setEmail(profileEmail);
 
         return responseKakaoUser;
     }
