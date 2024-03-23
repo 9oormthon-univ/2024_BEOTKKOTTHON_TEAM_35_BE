@@ -26,9 +26,9 @@ public class UserController {
 
     @Operation(summary = "유저 회원가입")
     @PostMapping("/register")
-    public ResponseEntity<Void> createUser(@RequestBody RequestUser request) {
-        userService.createUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Long> createUser(@RequestBody RequestUser request) {
+        Long userId = userService.createUser(request);
+        return new ResponseEntity<>(userId, HttpStatus.CREATED);
     }
 
     @Operation(summary = "유저 정보 조회")

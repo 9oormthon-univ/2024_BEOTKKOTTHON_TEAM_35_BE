@@ -7,7 +7,7 @@ import com.example.demo.vo.request.user.RequestUser;
 import java.util.Map;
 
 public interface UserService {
-    void createUser(RequestUser request);
+    Long createUser(RequestUser request);
     Map<String, Object> login(RequestLogin requestLogin);
     UserDto getUser(Long userId);
     void updateUser(Long userId, RequestUser request);
