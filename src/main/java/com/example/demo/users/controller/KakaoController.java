@@ -43,6 +43,12 @@ public class KakaoController {
 
         return userProfile.toString();
     }
+    @Operation(summary = "카카오 유저 토큰 조회")
+    @GetMapping("/oauth/callback")
+    public ResponseEntity<String> getKakaoAccessToken(@RequestParam("code") String code) {
+        String accessToken = kakaoService.getAccessToken(code);
+        return ResponseEntity.ok(accessToken);
+    }
 
     @Operation(summary = "카카오 로그아웃")
     @PostMapping("/logout")
