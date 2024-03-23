@@ -32,7 +32,12 @@ public class FinancialProductController {
     }
 
     @GetMapping("/search")
-    public List<FinancialProduct> searchFinancialProducts(@RequestParam("keyword") String keyword) {
+    public List<FinancialProduct> searchFinancialProducts(@RequestParam(value = "keyword", required = false) String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 키워드가 제공되지 않았거나 비어있는 경우 모든 금융 상품 반환
+            return financialProductService.getAllFinancialProducts();
+        }
+        // 그렇지 않으면, 키워드에 따라 필터링된 목록 반환
         return financialProductService.searchFinancialProducts(keyword);
     }
 
